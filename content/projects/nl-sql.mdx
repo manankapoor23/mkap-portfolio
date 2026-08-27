@@ -1,0 +1,50 @@
+---
+title: "NL → SQL"
+tagline: "Slack-native analytics assistant"
+description: "Turns plain-English questions into schema-aware SQL, run against a live database from Slack."
+year: 2025
+type: "Engineering"
+status: "Built"
+order: 3
+stats:
+  - { label: "Interface", value: "Slack" }
+  - { label: "Queries", value: "Schema-aware" }
+stack: ["LangChain", "LLMs", "SQL", "Slack API"]
+links:
+  github: "https://github.com/manankapoor23/NL-SQL"
+---
+
+## Overview
+
+A Slack-native data assistant: ask a question in plain English, get an answer from
+the database — no SQL, no leaving the channel.
+
+## The problem
+
+The people with questions about the data usually aren't the people who write SQL.
+The round-trip through an analyst is slow. NL → SQL closes that gap where the
+questions already happen: in Slack.
+
+## How it works
+
+```
+Slack slash-command
+      ↓
+schema-aware prompt (LangChain)
+      ↓
+generated SQL
+      ↓
+execute against live DB
+      ↓
+structured result in-channel
+```
+
+Built with LangChain, the assistant generates **schema-aware SQL** from a natural
+language question, executes it against a live database, and returns structured
+results directly in the Slack channel.
+
+## Notes
+
+Keeping the model schema-aware is what makes the SQL executable rather than
+plausible — the prompt carries table and column context so generated queries map
+to the real database.

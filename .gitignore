@@ -1,6 +1,8 @@
-dist/
 node_modules/
-.astro/
+.next/
+out/
+dist/
 .vercel/
 .DS_Store
 *.log
+next-env.d.ts

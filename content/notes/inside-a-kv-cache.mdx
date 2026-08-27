@@ -1,0 +1,29 @@
+---
+title: "What actually happens inside a KV cache"
+date: "Jul 2026"
+summary: "Why autoregressive decoding caches keys and values — and where the memory goes."
+---
+
+## The short version
+
+During autoregressive decoding, a transformer recomputes attention for every new
+token. Without a cache, generating token *n* means re-attending over all *n−1*
+previous tokens from scratch — quadratic work you've already done. The KV cache
+stores the key and value projections for past tokens so each new step only computes
+attention against cached state.
+
+## Where the memory goes
+
+The cache grows linearly with sequence length, layers, and heads. For long-context
+decoding it quickly dominates memory — often more than the weights themselves at
+inference time. That's the pressure point: batch size and context length trade
+directly against KV memory.
+
+## Why paging helps
+
+Contiguous allocation wastes memory to fragmentation and over-reservation. Treating
+the cache as pages — non-contiguous blocks with a page table, reference counting,
+and copy-on-write — lets you share prefixes across requests and pack memory tighter.
+That's the idea I explored in the KV-Paged-Attention project.
+
+*Draft — I'll expand this with concrete numbers.*

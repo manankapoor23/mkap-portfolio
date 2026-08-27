@@ -1,0 +1,26 @@
+---
+title: "Hybrid retrieval without the hand-waving"
+date: "Aug 2026"
+summary: "Why dense and sparse retrieval fail differently, and why using both is usually right."
+---
+
+## Two failure modes
+
+Dense retrieval matches meaning but misses exact tokens — product codes, error
+strings, rare names. BM25 matches those tokens but misses paraphrase. They fail on
+different queries, which is exactly why combining them works.
+
+## Combining them
+
+Run both, then fuse the rankings — reciprocal rank fusion is a simple, strong
+default that needs no score calibration between the two systems. The dense side
+recovers "how do I cancel" ≈ "stopping a subscription"; the sparse side nails
+"ERR_4032".
+
+## Grounding is the point
+
+Retrieval only matters if generation is actually constrained to what came back.
+In the support-triage agent, answers are hard-grounded in retrieved passages with
+zero external lookups — retrieval isn't a suggestion to the model, it's the boundary.
+
+*Draft.*

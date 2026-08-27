@@ -1,0 +1,54 @@
+---
+title: "RAG Support Triage"
+tagline: "Hybrid retrieval + grounded agent for support triage"
+description: "A grounded retrieval agent that triages support requests with zero external lookups."
+year: 2026
+type: "Engineering"
+status: "Built"
+order: 2
+stats:
+  - { label: "Documents", value: "117" }
+  - { label: "Tickets", value: "29" }
+  - { label: "Modules", value: "16" }
+  - { label: "Ext. lookups", value: "0" }
+stack: ["Python", "Hybrid Retrieval", "BM25", "Guardrails"]
+links:
+  github: "https://github.com/manankapoor23/rag-support-triage-agent"
+---
+
+## Overview
+
+A retrieval-augmented agent that triages support requests against a fixed knowledge
+base — grounded, auditable, and closed-book to the outside world.
+
+## The problem
+
+Support answers have to be traceable. A model that free-associates or reaches for
+the open web is a liability. The goal was an agent that answers *only* from an
+approved corpus, and escalates predictably when it can't.
+
+## Retrieval
+
+Hybrid **dense + BM25** retrieval over a 117-document corpus, so both semantic and
+exact-keyword matches surface. Answers are hard-grounded in retrieved passages —
+**zero external lookups**.
+
+## Guardrails
+
+```
+retrieve  →  ground  →  generate  →  filter  →  escalate
+```
+
+- Forbidden-pattern filtering on inputs and outputs
+- Post-generation guardrails before anything is returned
+- Deterministic escalation when confidence or grounding is insufficient
+
+## Pipeline
+
+The system is structured as a **16-module pipeline** — retrieval, grounding,
+generation, and safety are separate, testable stages rather than one prompt.
+
+## Results
+
+Evaluated on **29 real support tickets**, the agent stays grounded and escalates
+deterministically instead of guessing.

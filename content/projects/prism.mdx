@@ -1,0 +1,70 @@
+---
+title: "PRISM"
+tagline: "Multi-task Punjabi instruction dataset & model"
+description: "A low-resource NLP dataset and fine-tuned model for controlled Punjabi text rewriting."
+year: 2026
+type: "Research"
+status: "Published"
+order: 1
+stats:
+  - { label: "Samples", value: "91K+" }
+  - { label: "Tokens", value: "16.43M" }
+  - { label: "Sources", value: "600+" }
+  - { label: "Tasks", value: "6" }
+stack: ["Python", "PyTorch", "Unsloth", "HuggingFace", "Gemini API"]
+links:
+  huggingface: "https://huggingface.co/datasets/manankap23/PRISM-Punjabi"
+---
+
+## Overview
+
+PRISM is the first multi-task Punjabi instruction dataset for controlled text
+rewriting — and a LLaMA 3.1 8B model fine-tuned on it. Punjabi is a low-resource
+language for instruction tuning: there was no clean, task-conditioned corpus to
+teach a model to rewrite Gurmukhi text on demand. PRISM is an attempt to build one.
+
+## The problem
+
+Base open models handle Punjabi poorly. Asked to rewrite Gurmukhi text, LLaMA 3.1 8B
+tends to drift into Devanagari or produce character-level noise. The gap isn't
+model capacity — it's the absence of supervised, instruction-conditioned data in
+the script and the tasks that matter.
+
+## Data pipeline
+
+```
+600+ web sources
+      ↓
+extraction & cleaning
+      ↓
+normalization (Gurmukhi)
+      ↓
+Gemini 2.0 Flash  →  teacher generation
+      ↓
+structural validation  (drops corrupt samples)
+      ↓
+91,000+ instruction-conditioned samples · 6 tasks
+```
+
+16.43M tokens were aggregated from 600+ curated sources. A Gemini 2.0 Flash teacher
+generated instruction–response pairs across six rewriting tasks, and task-specific
+structural validation filtered out malformed samples before training.
+
+## Model
+
+LLaMA 3.1 8B, **full fine-tuned** on A100 GPUs with Unsloth. The fine-tuned model
+produces consistent Gurmukhi output across all six tasks, where the base model
+fails to stay in-script.
+
+## Evaluation
+
+The fine-tuned model was benchmarked against **four baseline models** across
+**five automatic metrics** spanning n-gram overlap, character-level similarity, and
+embedding-based scoring — measured per task rather than in aggregate, so failure
+modes stay visible.
+
+## Results
+
+PRISM establishes a usable supervised resource for controlled Punjabi rewriting and
+a model that reliably stays in-script — a small but real step for low-resource
+Punjabi NLP.

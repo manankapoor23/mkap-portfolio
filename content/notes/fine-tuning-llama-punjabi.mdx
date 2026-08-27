@@ -1,0 +1,25 @@
+---
+title: "Fine-tuning LLaMA 3.1 8B on Punjabi rewriting"
+date: "Jul 2026"
+summary: "Notes from building PRISM — teacher generation, script drift, and honest evaluation."
+---
+
+## The base model can't stay in-script
+
+Ask base LLaMA 3.1 8B to rewrite Gurmukhi and it drifts to Devanagari or emits
+character-level noise. That's a data problem, not a capacity problem — there was no
+task-conditioned Punjabi instruction data to learn from.
+
+## Teacher generation
+
+A Gemini 2.0 Flash teacher generated instruction–response pairs across six rewriting
+tasks, seeded from 16.43M tokens across 600+ sources. The interesting work is after
+generation: structural validation to drop malformed samples before they poison training.
+
+## Evaluating honestly
+
+Aggregate metrics hide per-task collapse. Benchmarking against four baselines across
+five automatic metrics — measured per task — is what makes "it works" a claim you can
+actually defend.
+
+*Draft — full write-up on the PRISM page.*
