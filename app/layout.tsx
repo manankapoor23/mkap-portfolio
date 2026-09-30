@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
       <body>
         <Navbar />
-        <main className="mx-auto max-w-[1180px] px-6">{children}</main>
+        <main className="mx-auto max-w-[1084px] px-4 md:px-0">{children}</main>
         <Footer />
         <Enhance />
       </body>

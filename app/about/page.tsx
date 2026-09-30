@@ -1,6 +1,6 @@
 import SectionLabel from "@/components/SectionLabel";
 import ExperienceRow from "@/components/ExperienceRow";
-import { profile, experience, now } from "@/lib/site";
+import { profile, experience, now, skills } from "@/lib/site";
 
 export const metadata = { title: "About" };
 
@@ -15,14 +15,26 @@ export default function AboutPage() {
           how it caches attention, how it ingests data, and how it's taught a new language.
         </p>
         <p>
-          Right now I'm a research intern building Punjabi instruction datasets and fine-tuning open
-          models, and an AI engineering intern red-teaming and evaluating LLM agents. I care about
-          evaluation done honestly, retrieval that's actually grounded, and models that ship.
+          Right now I'm a research intern at TIET building Punjabi instruction datasets and fine-tuning
+          open models, alongside independent research of my own. I've since wrapped up an AI engineering
+          internship red-teaming and evaluating LLM agents, and I'm increasingly drawn to backend and
+          system design — evaluation done honestly, retrieval that's actually grounded, and models that ship.
         </p>
       </div>
 
       <div className="mt-20"><SectionLabel>Experience</SectionLabel>
         <div>{experience.map((e) => <ExperienceRow key={e.org} item={e} />)}</div>
+      </div>
+
+      <div className="mt-20"><SectionLabel>Skills</SectionLabel>
+        <dl className="space-y-5">
+          {skills.map((s) => (
+            <div key={s.label} className="flex flex-col sm:flex-row sm:gap-6 border-t border-border pt-4">
+              <dt className="mono text-[0.72rem] uppercase tracking-[0.14em] text-muted w-40 shrink-0 pt-0.5">{s.label}</dt>
+              <dd className="text-muted">{s.items.join(" · ")}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
 
       <div className="mt-20"><SectionLabel>Now</SectionLabel>

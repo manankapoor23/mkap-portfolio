@@ -3,7 +3,7 @@ import { profile } from "@/lib/site";
 export default function Footer() {
   return (
     <footer className="border-t border-border mt-24">
-      <div className="mx-auto max-w-[1180px] px-6 py-12 flex flex-wrap items-end justify-between gap-6">
+      <div className="mx-auto max-w-[1084px] px-4 md:px-0 py-12 flex flex-wrap items-end justify-between gap-6">
         <div>
           <p className="text-lg font-medium">Let's build something.</p>
           <a href={`mailto:${profile.email}`} className="mono text-sm text-accent hover:underline underline-offset-4">

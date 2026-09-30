@@ -7,16 +7,16 @@ type: "Engineering"
 status: "Built"
 order: 3
 stats:
-  - { label: "Interface", value: "Slack" }
-  - { label: "Queries", value: "Schema-aware" }
-stack: ["LangChain", "LLMs", "SQL", "Slack API"]
+  - { label: "Interface", value: "/ask-data" }
+  - { label: "Temperature", value: "0" }
+stack: ["LangChain", "Gemini 2.0 Flash", "SQLite", "Slack Bolt"]
 links:
   github: "https://github.com/manankapoor23/NL-SQL"
 ---
 
 ## Overview
 
-A Slack-native data assistant: ask a question in plain English, get an answer from
+A Slack-native data assistant: run `/ask-data` in plain English, get an answer from
 the database — no SQL, no leaving the channel.
 
 ## The problem
@@ -28,23 +28,23 @@ questions already happen: in Slack.
 ## How it works
 
 ```
-Slack slash-command
+/ask-data slash command (Slack Bolt, socket mode)
       ↓
-schema-aware prompt (LangChain)
+schema-aware prompt (LangChain + Gemini 2.0 Flash, temp 0)
       ↓
-generated SQL
+generated SQLite SELECT
       ↓
-execute against live DB
+SELECT-only guardrail + markdown-fence strip + row cap
       ↓
-structured result in-channel
+formatted result block in-channel
 ```
 
-Built with LangChain, the assistant generates **schema-aware SQL** from a natural
-language question, executes it against a live database, and returns structured
-results directly in the Slack channel.
+Built with LangChain orchestrating Gemini 2.0 Flash, the assistant generates
+**schema-aware SQL** grounded on an in-prompt table schema with sample rows, run at
+**temperature 0** for determinism.
 
 ## Notes
 
-Keeping the model schema-aware is what makes the SQL executable rather than
-plausible — the prompt carries table and column context so generated queries map
-to the real database.
+A **SELECT-only guardrail** rejects all DDL/DML before execution, alongside
+markdown-fence stripping and a row cap — keeping the model schema-aware is what
+makes the SQL executable rather than plausible.

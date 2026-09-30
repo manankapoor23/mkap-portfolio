@@ -1,78 +1,206 @@
+import Image from "next/image";
 import Link from "next/link";
-import SectionLabel from "@/components/SectionLabel";
-import ProjectRow from "@/components/ProjectRow";
-import ExperienceRow from "@/components/ExperienceRow";
-import NoteRow from "@/components/NoteRow";
-import MagneticLink from "@/components/MagneticLink";
+import { Mail, Github, Linkedin, RefreshCw } from "lucide-react";
 import { profile, experience, now } from "@/lib/site";
 import { getProjects, getNotes } from "@/lib/content";
+import type { ProjectMeta, NoteMeta } from "@/lib/content";
+
+function ArrowLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-0.5">
+      <span className="border-b border-border-soft leading-tight group-hover:border-border-strong">{children}</span>
+      <svg className="relative h-4 w-4 text-faint transition-all group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M7 17L17 7" />
+        <path d="M7 7h10v10" />
+      </svg>
+    </a>
+  );
+}
+
+function article(word: string) {
+  return /^[aeiou]/i.test(word) ? "an" : "a";
+}
+
+function SummaryList() {
+  const current = experience[0];
+  const previous = experience[1];
+  return (
+    <div className="space-y-4">
+      <h2 className="text-sm font-medium uppercase text-faint">Summary</h2>
+      <ul className="list-disc space-y-2 pl-4 text-muted marker:text-border-strong">
+        <li>
+          Currently building <ArrowLink href="/work">systems</ArrowLink> across LLM evaluation, retrieval and fine-tuning.
+        </li>
+        {current ? (
+          <li>
+            Currently {article(current.role)} <span className="text-fg font-medium">{current.role}</span> at{" "}
+            <span className="text-fg font-medium">{current.org}</span>, {current.place}.
+          </li>
+        ) : null}
+        {previous ? (
+          <li>
+            Previously {article(previous.role)} <span className="text-fg font-medium">{previous.role}</span> at{" "}
+            <span className="text-fg font-medium">{previous.org}</span>, {previous.place}.
+          </li>
+        ) : null}
+        <li>Based in {profile.location} &mdash; {profile.status.toLowerCase()}.</li>
+      </ul>
+    </div>
+  );
+}
+
+function SocialRow() {
+  const shipping = now.find((n) => n.href);
+  return (
+    <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4">
+        <a href={`mailto:${profile.email}`} className="text-faint hover:text-muted" aria-label="Email">
+          <Mail className="h-5 w-5" />
+        </a>
+        <a href={profile.github} target="_blank" rel="noopener noreferrer" className="text-faint hover:text-muted" aria-label="GitHub">
+          <Github className="h-5 w-5" />
+        </a>
+        <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="text-faint hover:text-muted" aria-label="LinkedIn">
+          <Linkedin className="h-5 w-5" />
+        </a>
+      </div>
+
+      {shipping ? (
+        <>
+          <div className="h-4 w-px bg-border" />
+          <div className="group flex items-center gap-2 text-muted">
+            <div className="overflow-hidden rounded-full flex-shrink-0 text-faint">
+              <RefreshCw className="h-4 w-4 animate-none group-hover:animate-spin" />
+            </div>
+            <span className="text-sm whitespace-nowrap">
+              Shipping <ArrowLink href={shipping.href!}>{shipping.value}</ArrowLink>
+            </span>
+          </div>
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+function initials(title: string) {
+  return title
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+}
+
+function ProjectsList({ projects }: { projects: ProjectMeta[] }) {
+  return (
+    <div className="space-y-4">
+      <h2 className="text-sm font-medium uppercase text-faint">Projects</h2>
+      <div className="space-y-6">
+        {projects.map((p) => (
+          <div key={p.slug} className="flex items-start gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-panel flex-shrink-0">
+              <span className="text-xs font-medium text-muted">{initials(p.title)}</span>
+            </div>
+            <div className="space-y-1">
+              <Link href={`/work/${p.slug}`} className="group inline-flex items-center gap-0.5">
+                <span className="border-b border-border-soft leading-tight group-hover:border-border-strong">{p.title}</span>
+                <svg className="relative h-4 w-4 text-faint transition-all group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M7 17L17 7" />
+                  <path d="M7 7h10v10" />
+                </svg>
+              </Link>
+              <p className="text-base text-muted">{p.tagline}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function WritingList({ notes }: { notes: NoteMeta[] }) {
+  return (
+    <div className="space-y-4 pb-8 md:pb-0">
+      <h2 className="text-sm font-medium uppercase text-faint">Writing</h2>
+      <div className="space-y-4">
+        {notes.map((n) => (
+          <div key={n.slug} className="group">
+            <Link href={`/notes/${n.slug}`} className="grid grid-cols-[80px_1fr] items-baseline">
+              <span className="text-sm text-faint">{n.date}</span>
+              <div>
+                <span className="inline border-b border-border-soft text-base text-muted group-hover:text-fg">{n.title}</span>
+              </div>
+            </Link>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
-  const projects = getProjects().slice(0, 3);
-  const notes = getNotes().slice(0, 4);
+  const projects = getProjects();
+  const notes = getNotes();
 
   return (
     <>
-      {/* HERO */}
-      <section className="pt-20 md:pt-28 pb-20">
-        <h1 className="text-5xl md:text-7xl font-semibold tracking-[-0.045em] leading-[0.95]">{profile.name}</h1>
-        <p className="mono text-sm text-accent mt-5 tracking-[0.12em] uppercase">{profile.role}</p>
-        <p className="mt-6 text-xl md:text-2xl max-w-[30ch] leading-snug">{profile.intro}</p>
-        <p className="mt-3 text-muted max-w-[38ch]">{profile.sub}</p>
-
-        <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 mono text-[0.72rem] uppercase tracking-[0.14em] text-muted">
-          <span>{profile.location}</span>
-          <span>{profile.year}</span>
-          <span className="text-accent">{profile.status}</span>
-        </div>
-        <div className="mt-4 flex gap-6 mono text-sm">
-          <MagneticLink href={profile.github} className="hover:text-accent">GitHub ↗</MagneticLink>
-          <MagneticLink href={profile.linkedin} className="hover:text-accent">LinkedIn ↗</MagneticLink>
-          <MagneticLink href={`mailto:${profile.email}`} className="hover:text-accent">Email ↗</MagneticLink>
-        </div>
-      </section>
-
-      {/* SELECTED WORK */}
-      <section className="fade">
-        <div className="flex items-center justify-between">
-          <SectionLabel>Selected Work</SectionLabel>
-        </div>
-        <div>
-          {projects.map((p, i) => <ProjectRow key={p.slug} project={p} index={i} />)}
-        </div>
-        <div className="border-t border-border pt-5">
-          <Link href="/work" className="mono text-xs text-muted hover:text-accent">All work →</Link>
-        </div>
-      </section>
-
-      {/* EXPERIENCE */}
-      <section className="mt-24 fade">
-        <SectionLabel>Experience</SectionLabel>
-        <div>{experience.map((e) => <ExperienceRow key={e.org} item={e} />)}</div>
-      </section>
-
-      {/* NOTES */}
-      <section className="mt-24 fade">
-        <SectionLabel>Notes</SectionLabel>
-        <div>{notes.map((n) => <NoteRow key={n.slug} note={n} />)}</div>
-        <div className="border-t border-border pt-5">
-          <Link href="/notes" className="mono text-xs text-muted hover:text-accent">All notes →</Link>
-        </div>
-      </section>
-
-      {/* NOW */}
-      <section className="mt-24 fade">
-        <SectionLabel>Now</SectionLabel>
-        <dl className="grid sm:grid-cols-2 gap-x-10 gap-y-5 max-w-2xl">
-          {now.map((n) => (
-            <div key={n.label} className="flex gap-4 border-t border-border pt-4">
-              <dt className="mono text-[0.72rem] uppercase tracking-[0.14em] text-muted w-28 shrink-0 pt-0.5">{n.label}</dt>
-              <dd className="font-medium">
-                {n.href ? <a href={n.href} target="_blank" rel="noopener" className="hover:text-accent">{n.value} ↗</a> : n.value}
-              </dd>
+      {/* INTRO + SUMMARY */}
+      <section className="py-8 md:py-16">
+        {/* mobile */}
+        <div className="flex flex-col md:hidden gap-8">
+          <div className="flex flex-row gap-4 items-start">
+            <div className="w-3/4">
+              <p className="text-base text-muted">
+                Hi, I&rsquo;m {profile.name.split(" ")[0]} and you&rsquo;re currently exploring my little corner of the internet. {profile.intro}
+              </p>
             </div>
-          ))}
-        </dl>
+            <div className="w-1/4 aspect-square relative">
+              <Image src="/portrait.jpg" alt={profile.name} fill sizes="25vw" className="rounded-lg object-cover" priority />
+            </div>
+          </div>
+          <div className="space-y-8">
+            <SummaryList />
+            <SocialRow />
+          </div>
+        </div>
+
+        {/* desktop */}
+        <div className="hidden md:grid md:grid-cols-12 md:gap-5 items-start">
+          <div className="md:col-span-1" />
+          <div className="md:col-span-6 space-y-12">
+            <p className="text-base text-muted max-w-[46ch]">
+              Hi, I&rsquo;m {profile.name.split(" ")[0]} and you&rsquo;re currently exploring my little corner of the internet. {profile.intro} {profile.sub}
+            </p>
+            <SummaryList />
+            <SocialRow />
+          </div>
+          <div className="md:col-span-4">
+            <div className="relative w-full aspect-square">
+              <Image src="/portrait.jpg" alt={profile.name} fill sizes="(max-width: 768px) 0px, 25vw" className="rounded-lg object-cover" priority />
+            </div>
+          </div>
+          <div className="md:col-span-1" />
+        </div>
+      </section>
+
+      {/* PROJECTS + WRITING */}
+      <section className="pb-16">
+        <div className="flex flex-col gap-12 md:hidden">
+          <ProjectsList projects={projects} />
+          <WritingList notes={notes} />
+        </div>
+
+        <div className="hidden md:grid md:grid-cols-12 md:gap-5">
+          <div className="md:col-span-1" />
+          <div className="md:col-span-7">
+            <ProjectsList projects={projects} />
+          </div>
+          <div className="md:col-span-3 -ml-28">
+            <WritingList notes={notes} />
+          </div>
+          <div className="md:col-span-1" />
+        </div>
       </section>
     </>
   );

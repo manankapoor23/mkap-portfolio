@@ -2,9 +2,9 @@ export const profile = {
   name: "Manan Kapoor",
   role: "AI / ML Engineer",
   intro:
-    "I build LLM systems across evaluation, retrieval, fine-tuning and NLP.",
-  sub: "Currently researching NLP and instruction tuning at Thapar.",
-  location: "India",
+    "I build LLM systems across evaluation, retrieval, fine-tuning and NLP — with a growing focus on backend and system design.",
+  sub: "Currently researching independently and at Thapar (TIET).",
+  location: "Chandigarh, India",
   year: "2026",
   status: "Open to AI/ML internships",
   email: "23.kapoormanan@gmail.com",
@@ -23,26 +23,33 @@ export type ExperienceItem = {
 
 export const experience: ExperienceItem[] = [
   {
-    year: "2026",
+    year: "2025–Present",
+    org: "Thapar Institute (TIET)",
+    role: "Research Intern",
+    place: "Patiala, India",
+    note: "Published PRISM-Punjabi (16.43M tokens, 91K+ samples); full fine-tuned LLaMA 3.1 8B via Unsloth, evaluated against 4 baselines.",
+  },
+  {
+    year: "Jun–Jul 2026",
     org: "Colab91",
     role: "AI Engineering Intern",
     place: "Gurugram, India",
-    note: "Red-teaming, LLM evaluation, agent memory, and full-stack QA.",
-  },
-  {
-    year: "2025",
-    org: "Thapar Institute",
-    role: "Research Intern",
-    place: "Patiala, India",
-    note: "Punjabi instruction datasets, fine-tuning, and evaluation.",
+    note: "Red-teamed a production LLM analytics agent across 50+ probes; specified a factual-state store fix for context drift; owned full-stack QA.",
   },
 ];
 
 export const now = [
   { label: "Building", value: "claudget", href: "https://github.com/manankapoor23/claudget" },
-  { label: "Researching", value: "LLM evaluation & NLP" },
-  { label: "Learning", value: "distributed systems" },
-  { label: "Based in", value: "India" },
+  { label: "Researching", value: "independently & at TIET — LLM eval, retrieval, NLP" },
+  { label: "Learning", value: "backend & system design" },
+  { label: "Based in", value: "Chandigarh, India" },
+];
+
+export const skills = [
+  { label: "Languages", items: ["Python", "C++", "JavaScript", "SQL", "R"] },
+  { label: "ML & NLP", items: ["LLM fine-tuning (full & QLoRA)", "instruction tuning", "RAG", "transformers", "benchmarking", "prompt engineering"] },
+  { label: "Frameworks", items: ["PyTorch", "HuggingFace Transformers", "Unsloth", "LangChain", "OpenAI SDK", "sentence-transformers", "scikit-learn"] },
+  { label: "Backend & Systems", items: ["FastAPI", "system design", "Docker", "model serving", "inference pipelines", "PostgreSQL", "FAISS", "Chroma", "Linux"] },
 ];
 
 export type LabItem = { title: string; status: string };

@@ -4,14 +4,15 @@
 
 /* ---- design tokens: editorial engineering ---- */
 :root {
-  --bg: #f5f5f2;
-  --panel: #fafaf8;
+  --bg: #ffffff;
+  --panel: #f7f7f6;
   --fg: #111111;
   --muted: #686868;
   --faint: #9a9a96;
   --border: rgba(0, 0, 0, 0.12);
   --border-soft: rgba(0, 0, 0, 0.07);
-  --accent: #2f5fd0;
+  --border-strong: rgba(0, 0, 0, 0.22);
+  --accent: #111111;
 }
 [data-theme="dark"] {
   --bg: #0c0c0e;
@@ -21,7 +22,8 @@
   --faint: #5a5a60;
   --border: rgba(255, 255, 255, 0.14);
   --border-soft: rgba(255, 255, 255, 0.07);
-  --accent: #6c9bff;
+  --border-strong: rgba(255, 255, 255, 0.26);
+  --accent: #ededed;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -32,7 +34,8 @@
     --faint: #5a5a60;
     --border: rgba(255, 255, 255, 0.14);
     --border-soft: rgba(255, 255, 255, 0.07);
-    --accent: #6c9bff;
+    --border-strong: rgba(255, 255, 255, 0.26);
+    --accent: #ededed;
   }
 }
 
@@ -44,6 +47,7 @@
   --color-faint: var(--faint);
   --color-border: var(--border);
   --color-border-soft: var(--border-soft);
+  --color-border-strong: var(--border-strong);
   --color-accent: var(--accent);
 }
 
