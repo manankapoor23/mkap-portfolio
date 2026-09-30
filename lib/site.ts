@@ -1,9 +1,9 @@
 export const profile = {
   name: "Manan Kapoor",
-  role: "AI / ML Engineer",
+  role: "ML engineer, mostly language models",
   intro:
-    "I build LLM systems across evaluation, retrieval, fine-tuning and NLP — with a growing focus on backend and system design.",
-  sub: "Currently researching independently and at Thapar (TIET).",
+    "I work on the parts of language models that decide whether they're useful: evaluating them honestly, retrieving the right context, and fine-tuning them for languages they handle badly. Lately I'm learning backend and system design so the models actually ship.",
+  sub: "Computer Engineering student and research intern at Thapar Institute (TIET).",
   location: "Chandigarh, India",
   year: "2026",
   status: "Open to AI/ML internships",
@@ -40,9 +40,8 @@ export const experience: ExperienceItem[] = [
 
 export const now = [
   { label: "Building", value: "claudget", href: "https://github.com/manankapoor23/claudget" },
-  { label: "Researching", value: "independently & at TIET — LLM eval, retrieval, NLP" },
-  { label: "Learning", value: "backend & system design" },
-  { label: "Based in", value: "Chandigarh, India" },
+  { label: "Researching", value: "LLM evaluation, retrieval and NLP, at TIET and on my own" },
+  { label: "Learning", value: "backend and system design" },
 ];
 
 export const skills = [

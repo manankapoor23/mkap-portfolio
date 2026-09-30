@@ -1,14 +1,14 @@
 import Link from "next/link";
 import type { NoteMeta } from "@/lib/content";
 
-export default function NoteRow({ note }: { note: NoteMeta }) {
+export default function NoteRow({ note, showSummary = false }: { note: NoteMeta; showSummary?: boolean }) {
   return (
-    <Link href={`/notes/${note.slug}`} className="group flex items-baseline justify-between gap-6 border-t border-border py-5">
-      <div className="min-w-0">
-        <h3 className="font-medium transition-transform duration-300 group-hover:translate-x-1">{note.title}</h3>
-        {note.summary ? <p className="text-muted text-sm mt-0.5">{note.summary}</p> : null}
+    <div className="grid grid-cols-1 sm:grid-cols-[7rem_1fr] sm:gap-x-2">
+      <span className="mono tabular pt-[0.2rem] text-faint">{note.date}</span>
+      <div>
+        <Link href={`/notes/${note.slug}`} className="link">{note.title}</Link>
+        {showSummary && note.summary ? <p className="text-[0.9375rem] leading-normal text-muted">{note.summary}</p> : null}
       </div>
-      <span className="mono text-xs text-faint shrink-0">{note.date}</span>
-    </Link>
+    </div>
   );
 }

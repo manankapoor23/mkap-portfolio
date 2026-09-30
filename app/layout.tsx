@@ -1,32 +1,45 @@
 import "./globals.css";
-import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Newsreader, IBM_Plex_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Enhance from "@/components/Enhance";
 import { profile } from "@/lib/site";
 
-const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
-const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
+const serif = Newsreader({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  axes: ["opsz"],
+  variable: "--font-newsreader",
+  display: "swap",
+});
+const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex-mono", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mkap.vercel.app"),
-  title: { default: "Manan Kapoor — AI / ML Engineer", template: "%s — Manan Kapoor" },
+  title: { default: "Manan Kapoor", template: "%s — Manan Kapoor" },
   description: profile.intro,
   openGraph: { title: "Manan Kapoor", description: profile.intro, url: "https://mkap.vercel.app", type: "website" },
 };
 
-const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');})();`;
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fbfaf7" },
+    { media: "(prefers-color-scheme: dark)", color: "#121110" },
+  ],
+};
+
+const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${serif.variable} ${mono.variable}`} suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
       <body>
-        <Navbar />
-        <main className="mx-auto max-w-[1084px] px-4 md:px-0">{children}</main>
-        <Footer />
-        <Enhance />
+        <div className="mx-auto max-w-[640px] px-5">
+          <Navbar />
+          <main className="pt-16 pb-6">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );

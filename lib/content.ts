@@ -42,6 +42,12 @@ export function getProject(slug: string) {
   return { meta: { slug, ...(data as Omit<ProjectMeta, "slug">) }, content };
 }
 
+// Dates are "Mon YYYY" (e.g. "Aug 2026"); compare them chronologically, not as strings.
+function noteTime(date: string) {
+  const t = Date.parse(`1 ${date}`);
+  return Number.isNaN(t) ? 0 : t;
+}
+
 export function getNotes(): NoteMeta[] {
   return readDir("notes")
     .map((file) => {
@@ -49,7 +55,7 @@ export function getNotes(): NoteMeta[] {
       const { data } = matter(raw);
       return { slug: file.replace(/\.mdx$/, ""), ...(data as Omit<NoteMeta, "slug">) };
     })
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
+    .sort((a, b) => noteTime(b.date) - noteTime(a.date));
 }
 
 export function getNote(slug: string) {

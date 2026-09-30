@@ -2,20 +2,14 @@ import { profile } from "@/lib/site";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border mt-24">
-      <div className="mx-auto max-w-[1084px] px-4 md:px-0 py-12 flex flex-wrap items-end justify-between gap-6">
-        <div>
-          <p className="text-lg font-medium">Let's build something.</p>
-          <a href={`mailto:${profile.email}`} className="mono text-sm text-accent hover:underline underline-offset-4">
-            {profile.email}
-          </a>
-        </div>
-        <div className="mono text-[0.72rem] uppercase tracking-[0.12em] text-muted flex gap-5">
-          <a href={profile.github} target="_blank" rel="noopener" className="hover:text-fg">GitHub</a>
-          <a href={profile.linkedin} target="_blank" rel="noopener" className="hover:text-fg">LinkedIn</a>
-          <a href={profile.resume} target="_blank" rel="noopener" className="hover:text-fg">Résumé</a>
-        </div>
+    <footer className="mono mt-18 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-rule py-12 text-muted">
+      <div className="flex flex-wrap gap-x-4 gap-y-1">
+        <a href={`mailto:${profile.email}`} className="hover:text-fg">email</a>
+        <a href={profile.github} target="_blank" rel="noopener noreferrer" className="hover:text-fg">github</a>
+        <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-fg">linkedin</a>
+        <a href={profile.resume} target="_blank" rel="noopener noreferrer" className="hover:text-fg">résumé</a>
       </div>
+      <span className="text-faint">{profile.location}</span>
     </footer>
   );
 }

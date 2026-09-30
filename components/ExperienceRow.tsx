@@ -2,12 +2,12 @@ import type { ExperienceItem } from "@/lib/site";
 
 export default function ExperienceRow({ item }: { item: ExperienceItem }) {
   return (
-    <div className="flex gap-6 md:gap-10 border-t border-border py-6">
-      <span className="mono text-sm text-muted tabular pt-0.5 w-28 shrink-0">{item.year}</span>
+    <div className="grid grid-cols-1 sm:grid-cols-[7rem_1fr] sm:gap-x-2">
+      <span className="mono tabular pt-[0.2rem] text-faint">{item.year}</span>
       <div>
-        <h3 className="font-semibold">{item.org}</h3>
-        <p className="text-muted text-sm">{item.role} · {item.place}</p>
-        {item.note ? <p className="text-muted text-sm mt-1 max-w-[52ch]">{item.note}</p> : null}
+        <p>{item.role}, {item.org}</p>
+        <p className="mono text-faint">{item.place}</p>
+        {item.note ? <p className="mt-1 max-w-[60ch] text-[0.9375rem] leading-normal text-muted">{item.note}</p> : null}
       </div>
     </div>
   );

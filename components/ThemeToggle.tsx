@@ -3,8 +3,9 @@
 export default function ThemeToggle() {
   return (
     <button
-      aria-label="Toggle theme"
-      className="mono text-sm text-muted hover:text-fg transition-colors"
+      type="button"
+      aria-label="Toggle colour theme"
+      className="cursor-pointer text-muted hover:text-fg"
       onClick={() => {
         const el = document.documentElement;
         const cur =
@@ -15,7 +16,8 @@ export default function ThemeToggle() {
         try { localStorage.setItem("theme", next); } catch {}
       }}
     >
-      ◐
+      <span className="theme-light">dark</span>
+      <span className="theme-dark">light</span>
     </button>
   );
 }

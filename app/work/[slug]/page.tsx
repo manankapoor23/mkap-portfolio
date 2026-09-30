@@ -24,37 +24,35 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const { meta, content } = data!;
 
   return (
-    <article className="pt-16 pb-10">
-      <Link href="/work" className="mono text-xs text-muted hover:text-accent">← Work</Link>
+    <article>
+      <Link href="/work" className="mono text-muted hover:text-fg">← work</Link>
 
-      <header className="mt-8 pb-8 border-b border-border">
-        <div className="mono text-[0.72rem] uppercase tracking-[0.16em] text-muted mb-4">
-          {meta.type} · {meta.year} · {meta.status}
-        </div>
-        <h1 className="text-4xl md:text-6xl font-semibold tracking-[-0.03em] leading-[0.98]">{meta.title}</h1>
-        <p className="mt-4 text-xl text-muted max-w-[46ch]">{meta.tagline}</p>
+      <header className="mt-8 border-b border-rule pb-8">
+        <p className="mono text-faint">{meta.year} · {meta.type.toLowerCase()} · {meta.status.toLowerCase()}</p>
+        <h1 className="mt-2 text-[2.25rem] font-medium leading-[1.15] tracking-[-0.015em]">{meta.title}</h1>
+        <p className="mt-2 text-muted">{meta.tagline}</p>
 
         {meta.stats?.length ? (
-          <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4">
+          <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-3">
             {meta.stats.map((s) => (
               <div key={s.label}>
-                <div className="mono text-2xl md:text-3xl text-accent tabular">{s.value}</div>
-                <div className="mono text-[0.68rem] uppercase tracking-[0.14em] text-muted mt-1">{s.label}</div>
+                <dd className="tabular text-[1.375rem] font-medium leading-tight">{s.value}</dd>
+                <dt className="mono text-faint">{s.label.toLowerCase()}</dt>
               </div>
             ))}
-          </div>
+          </dl>
         ) : null}
 
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-          <span className="mono text-xs text-faint">{meta.stack?.join(" · ")}</span>
-          <div className="flex gap-4 mono text-xs">
-            {meta.links?.github ? <a href={meta.links.github} target="_blank" rel="noopener" className="text-accent hover:underline underline-offset-4">GitHub ↗</a> : null}
-            {meta.links?.huggingface ? <a href={meta.links.huggingface} target="_blank" rel="noopener" className="text-accent hover:underline underline-offset-4">HuggingFace ↗</a> : null}
-          </div>
-        </div>
+        <p className="mono mt-6 text-faint">{meta.stack?.join(" / ")}</p>
+        {meta.links?.github || meta.links?.huggingface ? (
+          <p className="mono mt-2 flex gap-4">
+            {meta.links?.github ? <a href={meta.links.github} target="_blank" rel="noopener noreferrer" className="link ext">github</a> : null}
+            {meta.links?.huggingface ? <a href={meta.links.huggingface} target="_blank" rel="noopener noreferrer" className="link ext">hugging face</a> : null}
+          </p>
+        ) : null}
       </header>
 
-      <div className="prose mt-12">
+      <div className="prose mt-10">
         <MDXRemote source={content} />
       </div>
     </article>
