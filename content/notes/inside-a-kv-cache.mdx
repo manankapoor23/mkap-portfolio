@@ -4,26 +4,86 @@ date: "Jul 2026"
 summary: "Why autoregressive decoding caches keys and values — and where the memory goes."
 ---
 
-## The short version
+A language model generates one token at a time, and each new token has to attend to
+every token before it. The KV cache is the trick that stops this from being
+quadratic work. It is also, for long contexts, the thing that runs you out of
+memory. This note is about both halves of that.
 
-During autoregressive decoding, a transformer recomputes attention for every new
-token. Without a cache, generating token *n* means re-attending over all *n−1*
-previous tokens from scratch — quadratic work you've already done. The KV cache
-stores the key and value projections for past tokens so each new step only computes
-attention against cached state.
+## What gets cached, and why
+
+In each attention layer, every token is projected into a query, a key and a value.
+To produce token *n*, the model compares token *n*'s query against the keys of
+tokens 1 to *n*, and uses the result to mix their values.
+
+The keys and values for tokens 1 to *n−1* don't change when token *n* arrives. They
+depend only on those earlier tokens. So there is no reason to recompute them. You
+store them once, and each decoding step does three things:
+
+```
+for each layer:
+    q, k, v = project(new_token)
+    cache[layer].append(k, v)          # one new row, not n
+    out = attend(q, cache[layer].k, cache[layer].v)
+```
+
+Without the cache, step *n* re-projects all *n* tokens in every layer. With it,
+step *n* projects one token and reads the rest. This is why generation splits
+into two phases: a prefill that processes the whole prompt at once and fills the
+cache, then a decode loop that adds one row per step.
 
 ## Where the memory goes
 
-The cache grows linearly with sequence length, layers, and heads. For long-context
-decoding it quickly dominates memory — often more than the weights themselves at
-inference time. That's the pressure point: batch size and context length trade
-directly against KV memory.
+The cache stores a key and a value for every token, in every layer, for every
+KV head. Per token, that is:
+
+```
+bytes per token = 2 × layers × kv_heads × head_dim × bytes_per_element
+```
+
+For LLaMA 3.1 8B (32 layers, 8 KV heads thanks to grouped-query attention,
+head dimension 128) in fp16:
+
+```
+2 × 32 × 8 × 128 × 2 bytes = 131,072 bytes ≈ 128 KiB per token
+```
+
+That looks small until you multiply it out. An 8K-token sequence needs about
+1 GiB of cache. A single 128K-token sequence needs about 16 GiB, roughly the size of
+the model's fp16 weights. Serve a batch of long requests and the cache, not the
+weights, decides how many fit on the GPU.
+
+Grouped-query attention is already a response to this. Without it, LLaMA 3.1 8B
+would cache 32 KV heads instead of 8, four times the memory.
 
 ## Why paging helps
 
-Contiguous allocation wastes memory to fragmentation and over-reservation. Treating
-the cache as pages — non-contiguous blocks with a page table, reference counting,
-and copy-on-write — lets you share prefixes across requests and pack memory tighter.
-That's the idea I explored in the KV-Paged-Attention project.
+The naive approach reserves one contiguous buffer per request, sized for the
+maximum length it might reach. Most requests never get there, so most of that
+reservation sits empty. Fragmentation between requests wastes more.
 
-*Draft — I'll expand this with concrete numbers.*
+Paging borrows the idea from operating systems. Split the cache into fixed-size
+blocks of a few tokens each, and give each request a table that maps its logical
+positions to physical blocks:
+
+```
+request A:  [blk 3] → [blk 7] → [blk 1]
+request B:  [blk 3] → [blk 9]          # shares A's prompt prefix
+```
+
+Blocks are allocated only as a sequence grows, so nothing is reserved up front.
+Two requests with the same prompt prefix can point at the same blocks, with
+reference counts and copy-on-write when one of them diverges. The attention
+kernel has to follow the table instead of reading one contiguous array, which is
+the price paid for packing memory tightly.
+
+That indirection is what I wanted to see for myself in my KV-Paged-Attention
+project.
+
+{/* TODO(manan): add what the KV-Paged-Attention project measured (block size, memory saved, any throughput numbers) and link the repo. */}
+
+## Open questions
+
+- Quantizing the cache to 8 or 4 bits halves or quarters the formula above. How much
+  quality does it cost on long-context tasks, compared with quantizing the weights?
+- Prefix sharing pays off most when many requests share a system prompt. How much
+  does it buy for real traffic, where prefixes overlap less neatly?

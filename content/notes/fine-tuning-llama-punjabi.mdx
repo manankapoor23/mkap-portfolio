@@ -4,22 +4,70 @@ date: "Jul 2026"
 summary: "Notes from building PRISM — teacher generation, script drift, and honest evaluation."
 ---
 
+When we started PRISM, base LLaMA 3.1 8B couldn't reliably rewrite a Punjabi sentence
+and keep it in Gurmukhi. The fix wasn't a bigger model. It was data: a supervised,
+task-conditioned corpus that didn't exist yet. These are notes on the three parts
+that took the most thought. The full write-up is on the [PRISM page](/work/prism).
+
 ## The base model can't stay in-script
 
-Ask base LLaMA 3.1 8B to rewrite Gurmukhi and it drifts to Devanagari or emits
-character-level noise. That's a data problem, not a capacity problem — there was no
-task-conditioned Punjabi instruction data to learn from.
+Ask base LLaMA 3.1 8B to rewrite Gurmukhi text and it often drifts into Devanagari,
+the script used for Hindi, or emits character-level noise. Punjabi is spoken by
+over a hundred million people, but it is thin in pretraining data next to Hindi.
+The two languages are close, and the model falls back on the one it has seen more.
 
-## Teacher generation
+That framing matters. If the problem were capacity, you would reach for a bigger
+model. Because it's missing supervision, the work goes into the dataset.
 
-A Gemini 2.0 Flash teacher generated instruction–response pairs across six rewriting
-tasks, seeded from 16.43M tokens across 600+ sources. The interesting work is after
-generation: structural validation to drop malformed samples before they poison training.
+## Teacher generation, then distrust everything
+
+PRISM's pipeline aggregates 16.43M tokens from 600+ curated sources, cleans and
+normalizes them to Gurmukhi, then uses a Gemini 2.0 Flash teacher to generate
+instruction–response pairs across six rewriting tasks. The result is 91K+ samples.
+
+Generation is the easy part. A teacher model makes the same mistakes as a student,
+less often, so every sample has to be checked before training. Task-specific
+structural validation drops malformed samples before they reach the model.
+
+The cheapest useful check of this kind is a script ratio. Gurmukhi and Devanagari
+sit in separate Unicode blocks, so you can measure how much of a response is in
+the right script:
+
+```python
+def gurmukhi_ratio(text: str) -> float:
+    letters = [c for c in text if c.isalpha()]
+    if not letters:
+        return 0.0
+    in_script = sum("਀" <= c <= "੿" for c in letters)
+    return in_script / len(letters)
+```
+
+A response from a teacher that has drifted fails this immediately. That catches the
+exact failure the dataset exists to fix, before it gets trained back in.
+
+{/* TODO(manan): list the actual validation checks PRISM used per task, and roughly what fraction of generated samples they dropped. */}
+
+## Training
+
+The model is LLaMA 3.1 8B, fully fine-tuned with Unsloth on A100 GPUs, not adapted
+with LoRA. After training it produces consistent Gurmukhi across all six tasks,
+where the base model drifts out of script.
+
+{/* TODO(manan): add the main hyperparameters (epochs, learning rate, sequence length) and why full fine-tuning was chosen over QLoRA. */}
 
 ## Evaluating honestly
 
-Aggregate metrics hide per-task collapse. Benchmarking against four baselines across
-five automatic metrics — measured per task — is what makes "it works" a claim you can
-actually defend.
+The fine-tuned model was benchmarked against four baseline models on five automatic
+metrics, covering n-gram overlap, character-level similarity and embedding-based
+scores. Everything was reported per task.
 
-*Draft — full write-up on the PRISM page.*
+That last part matters most. Averaged over six tasks, a model can look fine while
+collapsing on one of them. Reporting per task keeps that visible. It's the
+difference between "it works" and a claim you can defend.
+
+## What I'd look at next
+
+- Automatic metrics reward surface overlap. A small human evaluation per task, even
+  a few dozen samples, would catch fluent outputs that are subtly wrong.
+- Hold out sources, not just samples. If the train and test splits share sources,
+  some of the score is memorized style.

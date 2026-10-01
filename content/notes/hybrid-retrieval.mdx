@@ -4,23 +4,67 @@ date: "Aug 2026"
 summary: "Why dense and sparse retrieval fail differently, and why using both is usually right."
 ---
 
-## Two failure modes
+"Use hybrid retrieval" gets repeated a lot without the reason attached. The reason
+is simple. Dense and sparse retrieval fail on different queries, so each covers
+for the other. This note walks through how each one fails, how to combine them
+without tuning weights, and why retrieval matters less than what you do with the
+results.
 
-Dense retrieval matches meaning but misses exact tokens — product codes, error
-strings, rare names. BM25 matches those tokens but misses paraphrase. They fail on
-different queries, which is exactly why combining them works.
+## How BM25 fails
 
-## Combining them
+BM25 scores a document by the query terms it contains. Rare terms count for more,
+and repeated terms give diminishing returns. It is fast, needs no training, and is
+very good at exact matches: error codes, product names, config keys, a customer's
+odd spelling of a feature.
 
-Run both, then fuse the rankings — reciprocal rank fusion is a simple, strong
-default that needs no score calibration between the two systems. The dense side
-recovers "how do I cancel" ≈ "stopping a subscription"; the sparse side nails
-"ERR_4032".
+It has no idea what words mean. "How do I cancel" and "stopping my subscription"
+share no terms, so BM25 sees no connection. Any query phrased differently from the
+document misses.
+
+## How dense retrieval fails
+
+Dense retrieval embeds the query and each document as vectors, and returns the
+nearest documents. It handles paraphrase well, because similar meanings land near
+each other.
+
+It is weak where BM25 is strong. An embedding of `ERR_4032` is not reliably closer
+to the one document that mentions `ERR_4032` than to every other document about
+errors. Rare identifiers, numbers and names get blurred into "something like this".
+
+## Combining them with rank fusion
+
+The two systems' scores aren't on the same scale. A BM25 score of 12 and a cosine
+similarity of 0.81 can't be added. Reciprocal rank fusion sidesteps this by ignoring
+scores and using only rank positions:
+
+```
+score(doc) = Σ over retrievers   1 / (k + rank(doc))      # k ≈ 60
+```
+
+A document ranked first by one retriever and fifth by the other beats one that
+only appears tenth in a single list. There are no weights to tune and no scores to
+calibrate. It is a good default, and you should need evidence before replacing it
+with a learned reranker.
+
+```
+query ──┬──▶ BM25   ──▶ top 50 ──┐
+        │                         ├──▶ RRF ──▶ top k ──▶ generator
+        └──▶ dense  ──▶ top 50 ──┘
+```
 
 ## Grounding is the point
 
-Retrieval only matters if generation is actually constrained to what came back.
-In the support-triage agent, answers are hard-grounded in retrieved passages with
-zero external lookups — retrieval isn't a suggestion to the model, it's the boundary.
+Retrieval only matters if the generator is actually limited to what came back. In
+my support-triage agent, answers are grounded in retrieved passages from a
+117-document corpus, with zero external lookups. When retrieval doesn't return
+enough to answer, the agent escalates instead of guessing. Retrieval isn't a hint
+to the model. It is the boundary of what the model is allowed to say.
 
-*Draft.*
+{/* TODO(manan): add a concrete query from the 29 test tickets where BM25 and dense disagreed, and which one found the right passage. */}
+
+## Open questions
+
+- At what corpus size does a cross-encoder reranker on top of RRF start to pay for
+  its latency?
+- How do you decide the escalation threshold when retrieval returns something
+  plausible but wrong?
