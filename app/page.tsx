@@ -17,12 +17,7 @@ export default function Home() {
         <div className="flex items-center gap-4">
           <Image src="/portrait.jpg" alt="" width={64} height={64} className="h-16 w-16 rounded-[4px] object-cover" priority />
           <div>
-            <h1 className="text-[2.25rem] font-medium leading-[1.15] tracking-[-0.015em]">
-              {profile.name}{" "}
-              <span lang="pa" title="Manan Kapoor, in Gurmukhi" className="font-gurmukhi text-[1.25rem] font-normal tracking-normal text-faint">
-                ਮਨਨ ਕਪੂਰ
-              </span>
-            </h1>
+            <h1 className="text-[2.25rem] font-medium leading-[1.15] tracking-[-0.015em]">{profile.name}</h1>
             <p className="mono text-muted">{profile.role}</p>
           </div>
         </div>

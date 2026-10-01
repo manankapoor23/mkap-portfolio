@@ -52,7 +52,7 @@ export default function AboutPage() {
       <div className="mt-18">
         <SectionLabel>colophon</SectionLabel>
         <p className="text-[0.9375rem] leading-normal text-muted">
-          Set in Newsreader and IBM Plex Mono, with my name in Noto Serif Gurmukhi, the script PRISM is built for.
+          Set in Newsreader and IBM Plex Mono.
           Built with Next.js and MDX, hosted on Vercel. No analytics, no cookies. The weather is from Open-Meteo
           and the GitHub data comes straight from its API.{" "}
           <a href="https://github.com/manankapoor23/mkap-portfolio" target="_blank" rel="noopener noreferrer" className="link ext">Source</a>.

@@ -46,7 +46,6 @@
   --color-accent: var(--accent);
   --font-serif: var(--font-newsreader), Georgia, serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
-  --font-gurmukhi: var(--font-noto-gurmukhi), serif;
 }
 
 html { font-size: 106.25%; -webkit-text-size-adjust: 100%; }

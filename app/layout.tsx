@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import { Newsreader, IBM_Plex_Mono, Noto_Serif_Gurmukhi } from "next/font/google";
+import { Newsreader, IBM_Plex_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { profile } from "@/lib/site";
@@ -12,7 +12,6 @@ const serif = Newsreader({
   variable: "--font-newsreader",
   display: "swap",
 });
-const gurmukhi = Noto_Serif_Gurmukhi({ subsets: ["gurmukhi"], weight: ["400"], variable: "--font-noto-gurmukhi", display: "swap" });
 const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex-mono", display: "swap" });
 
 export const metadata: Metadata = {
@@ -33,7 +32,7 @@ const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(t)do
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${serif.variable} ${mono.variable} ${gurmukhi.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${serif.variable} ${mono.variable}`} suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
       <body>
         <div className="mx-auto max-w-[640px] px-5">
