@@ -8,7 +8,7 @@ export default function WorkPage() {
   return (
     <section>
       <h1 className="text-[2.25rem] font-medium leading-[1.15] tracking-[-0.015em]">Work</h1>
-      <p className="mt-3 text-muted">Projects in LLM systems, retrieval and NLP, each with a short technical write-up.</p>
+      <p className="mt-3 text-muted">A few things I’ve built: Punjabi language resources, a desktop usage monitor, and experiments with inference and retrieval.</p>
       <div className="mt-12 space-y-8">
         {projects.map((p) => <ProjectRow key={p.slug} project={p} showStats />)}
       </div>

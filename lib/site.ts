@@ -1,9 +1,9 @@
 export const profile = {
   name: "Manan Kapoor",
-  role: "ML engineer, mostly language models",
+  role: "Computer Engineering student · ML & software",
   intro:
-    "I work on the parts of language models that decide whether they're useful: evaluating them honestly, retrieving the right context, and fine-tuning them for languages they handle badly. Lately I'm learning backend and system design so the models actually ship.",
-  sub: "Computer Engineering student and research intern at Thapar Institute (TIET).",
+    "I'm Manan, a Computer Engineering student at Thapar exploring LLMs through research and building. I've worked on fine-tuning, inference, and chatbots, and I like digging into how these systems work. I also built claudget, an open-source Claude Code usage monitor with 186+ downloads.",
+  sub: "Based in Chandigarh. Research intern at TIET.",
   location: "Chandigarh, India",
   year: "2026",
   status: "Open to AI/ML internships",
@@ -27,27 +27,28 @@ export const experience: ExperienceItem[] = [
     org: "Thapar Institute (TIET)",
     role: "Research Intern",
     place: "Patiala, India",
-    note: "Published PRISM-Punjabi (16.43M tokens, 91K+ samples); full fine-tuned LLaMA 3.1 8B via Unsloth, evaluated against 4 baselines.",
+    note: "Built PRISM-Punjabi, a dataset of 91,000+ examples across six text-rewriting tasks. Prepared the data, fine-tuned LLaMA 3.1 8B, and compared it with four instruction-tuned models.",
   },
   {
     year: "Jun–Jul 2026",
     org: "Colab91",
     role: "AI Engineering Intern",
     place: "Gurugram, India",
-    note: "Red-teamed a production LLM analytics agent across 50+ probes; specified a factual-state store fix for context drift; owned full-stack QA.",
+    note: "Helped develop chatbots and applied my AI knowledge to a production analytics agent. Tested it with 50+ adversarial probes. Tracked down incorrect counts and context drift, proposed a change to how it stored facts, and tested the dashboard from frontend to backend.",
   },
 ];
 
 export const now = [
-  { label: "Building", value: "claudget", href: "https://github.com/manankapoor23/claudget" },
-  { label: "Researching", value: "LLM evaluation, retrieval and NLP, at TIET and on my own" },
+  { label: "Building", value: "claudget, a desktop app for keeping track of Claude Code usage", href: "https://claudget.vercel.app" },
+  { label: "Researching", value: "LLM fine-tuning, evaluation, and inference" },
   { label: "Learning", value: "backend and system design" },
 ];
 
 export const skills = [
-  { label: "Languages", items: ["Python", "C++", "JavaScript", "SQL", "R"] },
+  { label: "Languages", items: ["Python", "C++", "TypeScript", "JavaScript", "SQL", "R"] },
   { label: "ML & NLP", items: ["LLM fine-tuning (full & QLoRA)", "instruction tuning", "RAG", "transformers", "benchmarking", "prompt engineering"] },
   { label: "Frameworks", items: ["PyTorch", "HuggingFace Transformers", "Unsloth", "LangChain", "OpenAI SDK", "sentence-transformers", "scikit-learn"] },
+  { label: "Apps", items: ["Electron", "React", "Node.js", "Vitest", "GitHub Actions"] },
   { label: "Backend & Systems", items: ["FastAPI", "system design", "Docker", "model serving", "inference pipelines", "PostgreSQL", "FAISS", "Chroma", "Linux"] },
 ];
 

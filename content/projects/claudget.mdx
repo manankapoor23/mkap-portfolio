@@ -1,0 +1,44 @@
+---
+title: "claudget"
+tagline: "Claude Code usage, at a glance · 186+ downloads"
+description: "A desktop app I built because I kept checking how much Claude Code usage I had left."
+year: 2026
+type: "Desktop app"
+status: "Released"
+order: 1
+stats:
+  - { label: "Downloads · Oct 2026", value: "186+" }
+stack: ["TypeScript", "Electron", "React", "Node.js", "Vitest"]
+links:
+  github: "https://github.com/manankapoor23/claudget"
+  demo: "https://claudget.vercel.app"
+---
+
+I kept checking my Claude Code usage while working. I wanted the limits and reset
+times somewhere I could see them without interrupting what I was doing, so I built
+claudget.
+
+It runs on macOS, Windows, and Linux. The menu bar or tray shows plan usage, and a
+dashboard breaks down sessions and token activity. It also estimates when a limit
+will run out and can warn you as you get close.
+
+The [claudget website](https://claudget.vercel.app) reported 186 downloads in
+October 2026. That counts release downloads, rather than unique or active users.
+
+## What I worked on
+
+The app combines plan-limit data with local session transcripts. The transcript
+reader processes newly appended bytes and skips unchanged files, so it doesn't
+need to reread the whole history on every update. It also deduplicates retries.
+
+I separated the data-processing core from the Electron interface through a shared
+snapshot format. The app reads Claude Code's files without modifying them.
+
+GitHub Actions builds the installers. The project includes automated tests for
+the data core and app behavior.
+
+## Try it
+
+The [project website](https://claudget.vercel.app) has downloads and a walkthrough.
+The [repository](https://github.com/manankapoor23/claudget) documents how the usage
+tracking works and the differences between platforms.

@@ -1,0 +1,31 @@
+---
+title: "KV-Paged Attention"
+tagline: "Learning how inference engines manage memory"
+description: "A Python implementation of paged KV storage, shared prefixes, and copy-on-write."
+year: 2026
+type: "Systems experiment"
+status: "Reference implementation"
+order: 3
+stats: []
+stack: ["Python", "Paged KV cache", "Attention"]
+links:
+  github: "https://github.com/manankapoor23/KV-Paged-Attention"
+---
+
+Reading about attention and vLLM made me want to understand how inference engines
+manage memory. I built this project to work through the mechanics in Python.
+
+## What I implemented
+
+Keys and values live in fixed-size pages. A page table maps each request's token
+positions to storage. Prefix pages can be shared between requests, with reference
+counting and copy-on-write to handle changes safely.
+
+## Scope
+
+This is a CPU-only reference implementation. It tracks allocation and prefix reuse,
+and compares paged attention outputs with a naive implementation. It isn't a GPU
+serving engine or a throughput benchmark.
+
+Building it helped me connect the attention math with the memory-management ideas
+from my operating systems course.

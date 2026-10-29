@@ -1,71 +1,44 @@
 ---
-title: "PRISM"
-tagline: "Multi-task Punjabi instruction dataset & model"
-description: "A low-resource NLP dataset and fine-tuned model for controlled Punjabi text rewriting."
+title: "PRISM-Punjabi"
+tagline: "Data and fine-tuning for Punjabi text rewriting"
+description: "A 91,000+ example instruction dataset and a fine-tuned LLaMA 3.1 8B model, built during my research at TIET."
 year: 2026
 type: "Research"
-status: "Published"
-order: 1
+status: "Dataset published"
+order: 2
 stats:
-  - { label: "Samples", value: "91K+" }
-  - { label: "Tokens", value: "16.43M" }
-  - { label: "Sources", value: "600+" }
-  - { label: "Tasks", value: "6" }
+  - { label: "Examples", value: "91K+" }
+  - { label: "Source tokens", value: "16.43M" }
+  - { label: "Web sources", value: "600+" }
+  - { label: "Rewriting tasks", value: "6" }
 stack: ["Python", "PyTorch", "Unsloth", "HuggingFace", "Gemini API"]
 links:
   github: "https://github.com/manankapoor23/PRISM-Evals"
   huggingface: "https://huggingface.co/datasets/manankap23/PRISM-Punjabi"
 ---
 
-## Overview
+PRISM is my work on instruction-following for Punjabi text rewriting at TIET.
+I worked on the dataset pipeline, model fine-tuning, and evaluation.
 
-PRISM is the first multi-task Punjabi instruction dataset for controlled text
-rewriting — and a LLaMA 3.1 8B model fine-tuned on it. Punjabi is a low-resource
-language for instruction tuning: there was no clean, task-conditioned corpus to
-teach a model to rewrite Gurmukhi text on demand. PRISM is an attempt to build one.
+## Building the data
 
-## The problem
+I collected 16.43 million tokens from more than 600 web sources, then used Gemini
+2.0 Flash to generate instruction-response examples for six rewriting tasks.
+The dataset contains more than 91,000 examples.
 
-Base open models handle Punjabi poorly. Asked to rewrite Gurmukhi text, LLaMA 3.1 8B
-tends to drift into Devanagari or produce character-level noise. The gap isn't
-model capacity — it's the absence of supervised, instruction-conditioned data in
-the script and the tasks that matter.
+Generated examples needed validation before training. Structural validation removed 37% of the generated samples.
 
-## Data pipeline
+## Training and evaluation
 
-```
-600+ web sources
-      ↓
-extraction & cleaning
-      ↓
-normalization (Gurmukhi)
-      ↓
-Gemini 2.0 Flash  →  teacher generation
-      ↓
-structural validation  (drops corrupt samples)
-      ↓
-91,000+ instruction-conditioned samples · 6 tasks
-```
+I fully fine-tuned LLaMA 3.1 8B on A100 GPUs with Unsloth, using English instructions
+and Punjabi outputs in Alpaca format.
 
-16.43M tokens were aggregated from 600+ curated sources. A Gemini 2.0 Flash teacher
-generated instruction–response pairs across six rewriting tasks, and task-specific
-structural validation filtered out malformed samples before training.
+I compared the model with LLaMA 3.1 Instruct, Mistral 7B, Gemma 7B, and Phi-3 Mini
+across six tasks. Evaluation used BLEU, chrF++, ROUGE-L, BERTScore-F1, and Word-F1.
+These measure different kinds of similarity to a reference answer; they don't
+replace a person checking whether a rewrite preserves the intended meaning.
 
-## Model
+## Released resource
 
-LLaMA 3.1 8B, **full fine-tuned** on A100 GPUs with Unsloth. The fine-tuned model
-produces consistent Gurmukhi output across all six tasks, where the base model
-fails to stay in-script.
-
-## Evaluation
-
-The fine-tuned model was benchmarked against **four baseline models** across
-**five automatic metrics** spanning n-gram overlap, character-level similarity, and
-embedding-based scoring — measured per task rather than in aggregate, so failure
-modes stay visible.
-
-## Results
-
-PRISM establishes a usable supervised resource for controlled Punjabi rewriting and
-a model that reliably stays in-script — a small but real step for low-resource
-Punjabi NLP.
+[PRISM-Punjabi is available on Hugging Face](https://huggingface.co/datasets/manankap23/PRISM-Punjabi)
+under CC-BY 4.0. The evaluation repository is linked above.

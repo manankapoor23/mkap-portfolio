@@ -1,48 +1,27 @@
 ---
 title: "NL → SQL"
-tagline: "Slack-native analytics assistant"
-description: "Turns plain-English questions into schema-aware SQL, run against a live database from Slack."
+tagline: "Ask a database a question from Slack"
+description: "A Slack bot that turns a plain-English question into SQL and returns the query result."
 year: 2025
 type: "Engineering"
 status: "Built"
-order: 3
+order: 5
 stats: []
 stack: ["LangChain", "Gemini 2.0 Flash", "SQLite", "Slack Bolt"]
 links:
   github: "https://github.com/manankapoor23/NL-SQL"
 ---
 
-## Overview
-
-A Slack-native data assistant: run `/ask-data` in plain English, get an answer from
-the database — no SQL, no leaving the channel.
-
-## The problem
-
-The people with questions about the data usually aren't the people who write SQL.
-The round-trip through an analyst is slow. NL → SQL closes that gap where the
-questions already happen: in Slack.
+This project connects a Slack question to a database query. A user sends
+`/ask-data`, the model generates SQL using the database schema, and the bot posts
+the result back in Slack.
 
 ## How it works
 
-```
-/ask-data slash command (Slack Bolt, socket mode)
-      ↓
-schema-aware prompt (LangChain + Gemini 2.0 Flash, temp 0)
-      ↓
-generated SQLite SELECT
-      ↓
-SELECT-only guardrail + markdown-fence strip + row cap
-      ↓
-formatted result block in-channel
-```
+Slack Bolt handles the command. LangChain passes the question, schema, and sample
+rows to Gemini 2.0 Flash. The generated query runs against SQLite, and the result
+is formatted for the channel.
 
-Built with LangChain orchestrating Gemini 2.0 Flash, the assistant generates
-**schema-aware SQL** grounded on an in-prompt table schema with sample rows, run at
-**temperature 0** for determinism.
-
-## Notes
-
-A **SELECT-only guardrail** rejects all DDL/DML before execution, alongside
-markdown-fence stripping and a row cap — keeping the model schema-aware is what
-makes the SQL executable rather than plausible.
+The pipeline strips Markdown fences, checks for SELECT queries, and caps returned
+rows. Those checks help constrain execution, but a query still needs to match the
+user's question: successfully running SQL doesn't by itself mean the answer is right.

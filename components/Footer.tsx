@@ -1,6 +1,3 @@
-import { Suspense } from "react";
-import LocalTime from "./LocalTime";
-import Weather from "./Weather";
 import { profile } from "@/lib/site";
 
 const builtAt = process.env.BUILD_TIME ? new Date(process.env.BUILD_TIME) : null;
@@ -16,12 +13,7 @@ export default function Footer() {
           <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-fg">linkedin</a>
           <a href={profile.resume} target="_blank" rel="noopener noreferrer" className="hover:text-fg">résumé</a>
         </div>
-        <p className="text-faint">
-          Chandigarh · <LocalTime />
-          <Suspense fallback={null}>
-            <Weather />
-          </Suspense>
-        </p>
+
       </div>
       {builtAt ? (
         <p className="mt-3 text-faint">

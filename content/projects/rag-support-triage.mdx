@@ -1,53 +1,35 @@
 ---
 title: "RAG Support Triage"
-tagline: "Hybrid retrieval + grounded agent for support triage"
-description: "A grounded retrieval agent that triages support requests with zero external lookups."
+tagline: "Answering support questions from a fixed knowledge base"
+description: "A support agent that retrieves relevant documentation, checks its answer, and escalates when it can't answer from the available material."
 year: 2026
 type: "Engineering"
 status: "Built"
-order: 2
+order: 4
 stats:
   - { label: "Documents", value: "117" }
   - { label: "Tickets", value: "29" }
-  - { label: "Modules", value: "16" }
-stack: ["Python", "Hybrid Retrieval", "BM25", "Guardrails"]
+stack: ["Python", "Sentence-Transformers", "BM25", "OpenAI API", "Guardrails AI"]
 links:
   github: "https://github.com/manankapoor23/rag-support-triage-agent"
 ---
 
-## Overview
+I built this agent to answer support tickets using a supplied knowledge base.
+The project covers three support ecosystems, with 117 documents and 29 tickets.
+It runs without looking up additional information on the web.
 
-A retrieval-augmented agent that triages support requests against a fixed knowledge
-base — grounded, auditable, and closed-book to the outside world.
+## Retrieval and answers
 
-## The problem
+The retriever combines sentence embeddings with BM25 keyword matching. Retrieved
+passages provide the material for the answer, and grounding checks restrict it to
+that material.
 
-Support answers have to be traceable. A model that free-associates or reaches for
-the open web is a liability. The goal was an agent that answers *only* from an
-approved corpus, and escalates predictably when it can't.
+I added forbidden-pattern filtering and checks after generation. When the answer
+doesn't meet the grounding requirements, the pipeline follows an explicit escalation
+path. Retrieval, generation, and validation are separate modules.
 
-## Retrieval
+## What the evaluation covers
 
-Hybrid **dense + BM25** retrieval over a 117-document corpus, so both semantic and
-exact-keyword matches surface. Answers are hard-grounded in retrieved passages —
-**zero external lookups**.
-
-## Guardrails
-
-```
-retrieve  →  ground  →  generate  →  filter  →  escalate
-```
-
-- Forbidden-pattern filtering on inputs and outputs
-- Post-generation guardrails before anything is returned
-- Deterministic escalation when confidence or grounding is insufficient
-
-## Pipeline
-
-The system is structured as a **16-module pipeline** — retrieval, grounding,
-generation, and safety are separate, testable stages rather than one prompt.
-
-## Results
-
-Evaluated on **29 real support tickets**, the agent stays grounded and escalates
-deterministically instead of guessing.
+The 29-ticket set exercises the pipeline on the supplied scenarios. It is a small
+project evaluation, rather than evidence of performance across a live support queue.
+The code and setup are available in the repository.

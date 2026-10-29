@@ -10,15 +10,37 @@ export default function AboutPage() {
       <h1 className="text-[2.25rem] font-medium leading-[1.15] tracking-[-0.015em]">About</h1>
       <div className="prose mt-6">
         <p>
-          I'm a Computer Engineering student at Thapar Institute working where ML research meets
-          systems engineering. I like the parts of a language model most people treat as a black box:
-          how it caches attention, how it ingests data, and how it's taught a new language.
+          I'm Manan, a Computer Engineering student at Thapar Institute, graduating in 2028.
+          I'm from Chandigarh. Most of my work so far has been around language models,
+          but I also build desktop apps and small tools.
         </p>
         <p>
-          Right now I'm a research intern at TIET building Punjabi instruction datasets and fine-tuning
-          open models, alongside independent research of my own. In summer 2026 I red-teamed and evaluated
-          LLM agents as an AI engineering intern at Colab91. I'm increasingly drawn to backend and
-          system design: evaluation done honestly, retrieval that's actually grounded, and models that ship.
+          My research at TIET is part of my broader exploration of LLMs. One project was
+          PRISM, a Punjabi text-rewriting dataset and model. I collected and cleaned text, built
+          a pipeline to generate rewriting examples, and fine-tuned LLaMA 3.1 8B on the
+          resulting dataset. That meant working through the data as well as the model:
+          checking generated samples, filtering malformed ones, and comparing results
+          across six tasks.
+        </p>
+        <p>
+          In summer 2026, I interned at Colab91, where I helped develop chatbots and
+          applied what I knew about AI to their development and evaluation. I also tested an LLM analytics agent with
+          questions designed to expose mistakes. Some answers had incorrect counts;
+          others claimed to apply filters the system didn't support. I investigated
+          how conversation history was causing context drift and proposed storing
+          compact facts from tool results instead.
+        </p>
+        <p>
+          My side projects often start with something I want to understand or use.
+          Reading about attention and vLLM led me to build a paged KV cache in Python.
+          Repeatedly checking my Claude Code usage led to claudget, a desktop app
+          that keeps the numbers in view. It has reached 186+ downloads across its releases,
+          with builds for macOS, Windows, and Linux. I like being able to follow an idea far
+          enough to have something I can run, inspect, and improve.
+        </p>
+        <p>
+          I'm currently learning more about backend development and system design,
+          and looking for AI/ML internships.
         </p>
       </div>
 
