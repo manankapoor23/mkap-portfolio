@@ -59,3 +59,8 @@ export const lab: LabItem[] = [
   { title: "Gemini Embedding experiments", status: "active" },
   { title: "Paged-attention visualization", status: "experimenting" },
 ];
+
+export type DesignItem = { title: string; image: string };
+export const designs: DesignItem[] = [
+  { title: "URL shortener", image: "/design/url-shortener.png" },
+];
