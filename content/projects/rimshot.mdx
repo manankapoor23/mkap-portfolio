@@ -1,0 +1,33 @@
+---
+title: "Rimshot"
+tagline: "A Touch Bar for every MacBook trackpad"
+description: "A native macOS app that turns the trackpad edge into an on-screen control strip."
+year: 2026
+type: "macOS app"
+status: "Released"
+order: 2
+stats: []
+stack: ["Swift", "AppKit", "macOS", "Haptics"]
+links:
+  github: "https://github.com/manankapoor23/rimshot"
+  demo: "https://mkap.me/rimshot/"
+---
+
+Rimshot brings Touch Bar-style controls to a MacBook trackpad. Rest a finger on the
+top edge and an on-screen strip appears. Slide to select a control, then lift to
+activate it. It supports brightness, volume, keyboard backlight, media, screenshots,
+and Mission Control.
+
+## What I built
+
+The app is written in Swift and AppKit. It watches trackpad contact, maps movement
+to controls, and uses haptic feedback as the selection changes. Holding on a control
+can turn it into a slider, while sliding away cancels the action.
+
+It includes a trackpad view for seeing the active zones and a menu bar interface for
+settings. The project has a downloadable macOS release and a published build guide.
+
+## Try it
+
+See the [project website](https://mkap.me/rimshot/) or download the app from
+[GitHub Releases](https://github.com/manankapoor23/rimshot/releases).

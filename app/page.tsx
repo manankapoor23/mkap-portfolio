@@ -8,7 +8,7 @@ import { profile, experience, now } from "@/lib/site";
 import { getProjects, getNotes } from "@/lib/content";
 
 export default function Home() {
-  const projects = getProjects();
+  const projects = getProjects().filter((project) => project.featured !== false);
   const notes = getNotes();
 
   return (

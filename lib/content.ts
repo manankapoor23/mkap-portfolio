@@ -14,6 +14,7 @@ export type ProjectMeta = {
   type: string;
   status: string;
   order: number;
+  featured?: boolean;
   stats: Stat[];
   stack: string[];
   links: { github?: string; huggingface?: string; demo?: string };

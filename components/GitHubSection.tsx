@@ -53,14 +53,14 @@ export default async function GitHubSection() {
 
   return (
     <section className="mt-18">
-      <SectionLabel>github</SectionLabel>
+      <SectionLabel>github · selected repos, refreshed weekly</SectionLabel>
 
       {calendar ? <Heatmap weeks={calendar.weeks} total={calendar.total} /> : null}
       {summary.length ? <p className="mono tabular mt-2 text-faint">{summary.join(" · ")}</p> : null}
 
       {repos.length ? (
         <div className="mt-6 space-y-4">
-          {repos.map((r) => (
+          {repos.slice(0, 5).map((r) => (
             <div key={r.name} className="grid grid-cols-1 sm:grid-cols-[7rem_1fr] sm:gap-x-2">
               <span className="mono tabular pt-[0.2rem] text-faint">{shortDate(r.pushedAt)}</span>
               <div>

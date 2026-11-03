@@ -1,6 +1,9 @@
 const USER = "manankapoor23";
-const HIDDEN = new Set([USER, "mkap-portfolio"]);
+const HIDDEN = new Set([USER, "mkap-portfolio", "homebrew-tap", "manankapoor23.github.io", "QalaAI", "photography-portfolio"]);
+const WEEK = 60 * 60 * 24 * 7;
 const REVALIDATE = 3600;
+const NOT_PROJECT_NAME = /(?:^|[-_])(learn|learning|course|tutorial|lab|dsa|oops|solutions|exercises|test)(?:$|[-_])/i;
+const NOT_PROJECT_DESCRIPTION = /\b(coursework|practice project|learning project|to learn|basic exercises|self-graded|early wip|empty shell|superseded|pending (?:manual )?deletion|no code)\b/i;
 
 export type Repo = {
   name: string;
@@ -9,6 +12,7 @@ export type Repo = {
   language: string | null;
   stars: number;
   pushedAt: string;
+  createdAt: string;
 };
 
 export type ContributionDay = { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 };
@@ -37,12 +41,12 @@ function headers(): HeadersInit {
   return h;
 }
 
-async function getJSON<T>(url: string, init?: RequestInit): Promise<T | null> {
+async function getJSON<T>(url: string, init?: RequestInit, revalidate = REVALIDATE): Promise<T | null> {
   try {
     const res = await fetch(url, {
       ...init,
       headers: { ...headers(), ...init?.headers },
-      next: { revalidate: REVALIDATE },
+      next: { revalidate },
       signal: AbortSignal.timeout(4000),
     });
     if (!res.ok) return null;
@@ -59,16 +63,33 @@ type RestRepo = {
   language: string | null;
   stargazers_count: number;
   pushed_at: string;
+  created_at: string;
+  size: number;
   fork: boolean;
   archived: boolean;
 };
 
-async function getRepos(): Promise<Repo[]> {
-  const data = await getJSON<RestRepo[]>(`https://api.github.com/users/${USER}/repos?per_page=100&sort=pushed`);
+function projectScore(repo: RestRepo): number {
+  const daysSincePush = Math.max(0, (Date.now() - Date.parse(repo.pushed_at)) / 86_400_000);
+  const activity = daysSincePush <= 90 ? 15 : daysSincePush <= 365 ? 5 : 0;
+  return repo.stargazers_count * 5 + activity + Math.min(repo.size, 500) / 100;
+}
+
+export async function getFeaturedRepos(): Promise<Repo[]> {
+  const data = await getJSON<RestRepo[]>(`https://api.github.com/users/${USER}/repos?per_page=100&sort=pushed`, undefined, WEEK);
   if (!Array.isArray(data)) return [];
   return data
-    .filter((r) => !r.fork && !r.archived && !HIDDEN.has(r.name))
-    .slice(0, 5)
+    .filter((r) =>
+      !r.fork &&
+      !r.archived &&
+      !HIDDEN.has(r.name) &&
+      r.size >= 80 &&
+      Boolean(r.description?.trim()) &&
+      !NOT_PROJECT_NAME.test(r.name) &&
+      !NOT_PROJECT_DESCRIPTION.test(r.description ?? ""),
+    )
+    .sort((a, b) => projectScore(b) - projectScore(a) || b.pushed_at.localeCompare(a.pushed_at))
+    .slice(0, 10)
     .map((r) => ({
       name: r.name,
       url: r.html_url,
@@ -76,6 +97,7 @@ async function getRepos(): Promise<Repo[]> {
       language: r.language,
       stars: r.stargazers_count,
       pushedAt: r.pushed_at,
+      createdAt: r.created_at,
     }));
 }
 
@@ -118,6 +140,6 @@ async function getCalendar(): Promise<GitHubData["calendar"]> {
 }
 
 export async function getGitHub(): Promise<GitHubData> {
-  const [repos, publicRepos, calendar] = await Promise.all([getRepos(), getPublicRepoCount(), getCalendar()]);
+  const [repos, publicRepos, calendar] = await Promise.all([getFeaturedRepos(), getPublicRepoCount(), getCalendar()]);
   return { repos, publicRepos, calendar };
 }
