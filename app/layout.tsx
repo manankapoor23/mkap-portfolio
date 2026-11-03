@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${serif.variable} ${mono.variable}`} suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
       <body>
-        <div className="mx-auto max-w-[640px] px-5">
+        <div className="mx-auto min-h-screen max-w-[640px] border border-rule px-5">
           <Navbar />
           <main className="pt-16 pb-6">{children}</main>
           <Footer />
